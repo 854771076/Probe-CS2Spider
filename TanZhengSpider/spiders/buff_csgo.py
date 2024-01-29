@@ -8,7 +8,7 @@ class SteamSpider(scrapy.Spider):
     name = "buff_csgo"
     allowed_domains = ["163.com"]
     pagesize = 80
-    page = 11
+    page = 1
     collection = 'buff_csgo'
     game = 730
     column = 'market_hash_name'

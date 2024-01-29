@@ -2,6 +2,7 @@ import pymongo, datetime
 import hashlib
 import requests
 
+
 class MongoDB:
     def __init__(self, collection, database, host, port, username,
                  password, authSource):
@@ -19,6 +20,26 @@ class MongoDB:
             return res[0]
         else:
             return None
+
+    def archive(self, collections: dict, logger=None):
+        time = datetime.datetime.today()
+        target_date = time - datetime.timedelta(days=30)
+        for key in collections.keys():
+            logger.info(f'msg:开始归档,collection:{key}_archive_30,time:{time.date()}')
+            deleted_count = self.database[f'{key}_archive_30'].delete_many(
+                {'archive_time': {'$lt': str(target_date.date())}}).deleted_count
+            logger.info(f'msg:开始删档,collection:{key}_archive_30,count:{deleted_count},time:{target_date.date()}')
+            data_list = []
+            column_old = list(collections.get(key).values())
+            column_new = list(collections.get(key).keys())
+            for data in self.database[key].find({}, {i: 1 for i in column_old}):
+                for j in range(len(column_old)):
+                    data[column_new[j]] = 0 if not data.get(column_old[j]) else data.get(column_old[j])
+                data['archive_time'] = str(time.date())
+                data['source'] = key
+                data_list.append(data)
+            count = len(self.database[f'{key}_archive_30'].insert_many(data_list).inserted_ids)
+            logger.info(f'msg:归档成功,collection:{key}_archive_30,count:{count},time:{time.date()}')
 
     def insert_item(self, item):
 
@@ -59,9 +80,9 @@ class MongoDB:
 
     def get_size(self):
         return self.col.estimated_document_count()
-def uuyp_login(username,password):
 
 
+def uuyp_login(username, password):
     headers = {
         'Accept': 'application/json, text/plain, */*',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
@@ -77,5 +98,5 @@ def uuyp_login(username,password):
     }
 
     response = requests.post('https://api.youpin898.com/api/user/Auth/PwdSignIn', headers=headers, json=json_data)
-    print(json_data,response.json())
-    return response.json().get('Data',{}).get('Token')
+    print(json_data, response.json())
+    return response.json().get('Data', {}).get('Token')
