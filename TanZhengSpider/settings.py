@@ -11,10 +11,10 @@ BOT_NAME = "TanZhengSpider"
 
 SPIDER_MODULES = ["TanZhengSpider.spiders"]
 NEWSPIDER_MODULE = "TanZhengSpider.spiders"
-MONGODB_HOST = "www.fiang.fun"
+MONGODB_HOST = ""
 MONGODB_PORT = 27017
 MONGODB_USER = 'root'
-MONGODB_PSW = 'fiang123456'
+MONGODB_PSW = ''
 MONGODB_AUTHSOURCE = 'admin'
 MONGODB_DB = 'tanzheng-spider-test'
 LOG_LEVEL = 'INFO'
