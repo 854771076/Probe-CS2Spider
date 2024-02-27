@@ -25,8 +25,10 @@ class DefaultPipeline:
     def process_item(self, item, spider):
         try:
             self.conn.update_item(item,spider.column)
+            
         except Exception as e:
             spider.logger.error(e)
 
     def close_spider(self, spider):
+        self.conn.submit()
         self.conn.close()

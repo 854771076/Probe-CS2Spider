@@ -8,7 +8,7 @@ settings = get_project_settings()
 
 
 class SteamSpider(scrapy.Spider):
-    name = "archive_30_csgo"
+    name = "archive_csgo"
     allowed_domains = ["163.com"]
 
     start_urls = [
