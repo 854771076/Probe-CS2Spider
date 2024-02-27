@@ -68,6 +68,7 @@ class MongoDB:
                  password, authSource):
         self.client = pymongo.MongoClient(host=host, port=port, username=username, password=password,
                                           authSource=authSource)
+        self.collection=collection
         self.database = self.client[database]
         self.col = self.database[collection]
         self.write_list = []
@@ -123,6 +124,17 @@ class MongoDB:
         md5_str = md5.hexdigest()
         item["item_id"] = md5_str
         item['update_time'] = datetime.datetime.now()
+        time = datetime.datetime.today()
+        try:
+            today = self.database[self.collection+'_archive'].find_one({'archive_time': str(time.date()), 'item_id': item["item_id"]})
+            price1 = float(today.get('price') if today.get('price') else 0)
+            price2 = float(item.get(self.collections[self.collection]['price']) if item.get(self.collections[self.collection]['price']) else 0)
+            price3 = round((price2 - price1) / price1, 4)
+            item["price_rate"] = price3
+            item["price_rate_string"]=f'{round(price3*100,2)}%'
+        except:
+            item["price_rate"] = 0
+            item["price_rate_string"] = "0%"
         self.write_list.append(pymongo.UpdateOne({"item_id": item["item_id"]}, {"$set": item}, upsert=True))
 
     def submit(self):
