@@ -1,7 +1,7 @@
 import scrapy
 from scrapy.http import Request
 from time import sleep
-from ..utils import MongoDB
+from ..utils import MongoDB, getRedisConnection
 from scrapy.utils.project import get_project_settings
 
 settings = get_project_settings()
@@ -81,8 +81,14 @@ class SteamSpider(scrapy.Spider):
 
     def parse(self, response):
         try:
-            MongoDB(self.collection, database=settings.get('MONGODB_DB'), host=settings.get('MONGODB_HOST'),
-                    port=settings.get('MONGODB_PORT'), username=settings.get('MONGODB_USER'),
-                    password=settings.get('MONGODB_PSW'), authSource=settings.get('MONGODB_AUTHSOURCE')).archive(self.collections,self.logger)
+            DB = MongoDB(self.collection, database=settings.get('MONGODB_DB'), host=settings.get('MONGODB_HOST'),
+                         port=settings.get('MONGODB_PORT'), username=settings.get('MONGODB_USER'),
+                         password=settings.get('MONGODB_PSW'), authSource=settings.get('MONGODB_AUTHSOURCE'))
+            DB.archive(self.collections, self.logger)
+            # r = getRedisConnection(settings.get('REDIS_HOST'), settings.get('REDIS_PORT'), settings.get('REDIS_PSW'),
+            #                        settings.get('REDIS_DB'))
+            # for i in self.collections:
+            #     data = {j.get('item_id'): j.get(self.collections.get(i).get('price')) for j in DB.database[i+"_archive"].find({})}
+            #     r.hmset(i, data)
         except Exception as e:
             self.logger.error(f"msg:异常{e}")

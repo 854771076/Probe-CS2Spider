@@ -6,7 +6,7 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from .utils import MongoDB
+from .utils import MongoDB,getRedisConnection
 from scrapy.utils.project import get_project_settings
 settings = get_project_settings()
 
@@ -21,14 +21,16 @@ class DefaultPipeline:
         # 建立连接
         self.conn = MongoDB(spider.collection, database=settings.get('MONGODB_DB'), host=settings.get('MONGODB_HOST'), port=settings.get('MONGODB_PORT'), username=settings.get('MONGODB_USER'),
                  password=settings.get('MONGODB_PSW'), authSource=settings.get('MONGODB_AUTHSOURCE'))
-
+        # self.redis=getRedisConnection(settings.get('REDIS_HOST'), settings.get('REDIS_PORT'), settings.get('REDIS_PSW'),
+        #                            settings.get('REDIS_DB'))
     def process_item(self, item, spider):
         try:
             self.conn.update_item(item,spider.column)
-            
+
         except Exception as e:
             spider.logger.error(e)
 
     def close_spider(self, spider):
         self.conn.submit()
         self.conn.close()
+        # self.redis.close()

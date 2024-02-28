@@ -1,7 +1,7 @@
 import pymongo, datetime
 import hashlib
-import requests
-import pymongo,datetime
+import redis
+import pymongo, datetime,requests
 
 
 class MongoDB:
@@ -68,7 +68,7 @@ class MongoDB:
                  password, authSource):
         self.client = pymongo.MongoClient(host=host, port=port, username=username, password=password,
                                           authSource=authSource)
-        self.collection=collection
+        self.collection = collection
         self.database = self.client[database]
         self.col = self.database[collection]
         self.write_list = []
@@ -89,6 +89,10 @@ class MongoDB:
         for key in collections.keys():
             logger.info(f'msg:开始归档,collection:{key}_archive,time:{time.date()}')
             deleted_count = self.database[f'{key}_archive'].delete_many(
+                {'archive_time': str(time.date())}).deleted_count
+            logger.info(f'msg:开始删除今天重复档,collection:{key}_archive,count:{deleted_count},time:{target_date.date()}')
+
+            deleted_count = self.database[f'{key}_archive'].delete_many(
                 {'archive_time': {'$lt': str(target_date.date())}}).deleted_count
             logger.info(f'msg:开始删档,collection:{key}_archive,count:{deleted_count},time:{target_date.date()}')
             data_list = []
@@ -97,8 +101,6 @@ class MongoDB:
             for data in self.database[key].find({}, {i: 1 for i in column_old}):
                 data.pop("_id")
                 for j in range(len(column_old)):
-
-
                     data[column_new[j]] = 0 if not data.get(column_old[j]) else data.get(column_old[j])
                 data['archive_time'] = str(time.date())
                 data['source'] = key
@@ -125,16 +127,7 @@ class MongoDB:
         item["item_id"] = md5_str
         item['update_time'] = datetime.datetime.now()
         time = datetime.datetime.today()
-        try:
-            today = self.database[self.collection+'_archive'].find_one({'archive_time': str(time.date()), 'item_id': item["item_id"]})
-            price1 = float(today.get('price') if today.get('price') else 0)
-            price2 = float(item.get(self.collections[self.collection]['price']) if item.get(self.collections[self.collection]['price']) else 0)
-            price3 = round((price2 - price1) / price1, 4)
-            item["price_rate"] = price3
-            item["price_rate_string"]=f'{round(price3*100,2)}%'
-        except:
-            item["price_rate"] = 0
-            item["price_rate_string"] = "0%"
+
         self.write_list.append(pymongo.UpdateOne({"item_id": item["item_id"]}, {"$set": item}, upsert=True))
 
     def submit(self):
@@ -158,18 +151,18 @@ class MongoDB:
 
     def get_size(self):
         return self.col.estimated_document_count()
-    def price_contrast_1day(self, col,item_id, logger=None):
-        if col in self.collections.keys():
-            time = datetime.datetime.today()
-            data1=self.database[col+'_archive'].find_one({'archive_time':str(time.date()),'item_id':item_id})
-            data2=self.database[col].find_one({'item_id':item_id})
-            price1=float(data1.get('price') if data1.get('price') else 0)
-            price2=float(data2.get(self.collections[col]['price']) if data2.get(self.collections[col]['price']) else 0)
-            price3=round((price2-price1)/price1,4)
-            return price3>0,price3,f'{price3*100}%'
-        else:
-            logger.error(f'没有集合:{col}')
-            return False,0
+
+
+
+
+
+
+def getRedisConnection(REDIS_HOST,REDIS_PORT,REDIS_PSW,REDIS_DB):
+    # 初始化redis
+    pool = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True, password=REDIS_PSW,
+                                db=REDIS_DB)
+    r = redis.Redis(connection_pool=pool)
+    return r
 
 
 def uuyp_login(username, password):
