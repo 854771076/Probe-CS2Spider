@@ -14,16 +14,29 @@ class SteamSpider(scrapy.Spider):
     column = 'hash_name'
     USD2CNY=None
     start_urls = [
-        f"https://steamcommunity.com/market/search/render/?query=&start={(page - 1) * pagesize}&count={pagesize}&search_descriptions=0&sort_column=popular&sort_dir=desc&appid={game}&norender=1"]
+        f"https://steamcommunity.com/market/search/render/?query=&start={(page - 1) * pagesize}&count={pagesize}&search_descriptions=0&sort_column=popular&sort_dir=desc&appid={game}&norender=1&country=HK"]
     custom_settings = {
         "ITEM_PIPELINES": {
             'TanZhengSpider.pipelines.DefaultPipeline': 300,
         },
 
         "DEFAULT_REQUEST_HEADERS": {
-            'Accept': 'application/json',
-            'Cookie': 'timezoneOffset=28800,0; browserid=2918958891933564199; sessionid=4519ade0c66f30f4c7c0c541; steamCountry=HK%7C47ecf4469157e9f83687510744f179a0; steamLoginSecure=76561198979917651%7C%7CeyAidHlwIjogIkpXVCIsICJhbGciOiAiRWREU0EiIH0.eyAiaXNzIjogInI6MERFMV8yMzk5NTQ0QV9FRDY0MiIsICJzdWIiOiAiNzY1NjExOTg5Nzk5MTc2NTEiLCAiYXVkIjogWyAid2ViOmNvbW11bml0eSIgXSwgImV4cCI6IDE3MDYyNjEyMjMsICJuYmYiOiAxNjk3NTM0NDgyLCAiaWF0IjogMTcwNjE3NDQ4MiwgImp0aSI6ICIwRTNCXzIzRDlFRjg2XzU0NDZBIiwgIm9hdCI6IDE3MDE5NDI5MzQsICJydF9leHAiOiAxNzE5Nzk3MTgyLCAicGVyIjogMCwgImlwX3N1YmplY3QiOiAiMTAxLjQ0LjgxLjEwNSIsICJpcF9jb25maXJtZXIiOiAiMTA2LjgzLjAuMTA4IiB9.owwJLGynqe3v3qUxvi9ivziZ_Eam4QPWHTXY48fRS0TqyVdATdDxr04Hagyts0r2QZ_G5Cb-an-hIlV-UDbJCQ; webTradeEligibility=%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A0%2C%22time_checked%22%3A1706174483%7D',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Mobile Safari/537.36',
+             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                # Requests sorts cookies= alphabetically
+                # 'Cookie': 'timezoneOffset=28800,0; browserid=2918958891933564199; steamLoginSecure=76561198979917651%7C%7CeyAidHlwIjogIkpXVCIsICJhbGciOiAiRWREU0EiIH0.eyAiaXNzIjogInI6MERFMV8yMzk5NTQ0QV9FRDY0MiIsICJzdWIiOiAiNzY1NjExOTg5Nzk5MTc2NTEiLCAiYXVkIjogWyAid2ViOmNvbW11bml0eSIgXSwgImV4cCI6IDE3MDk1NjQyNDksICJuYmYiOiAxNzAwODM2NDcwLCAiaWF0IjogMTcwOTQ3NjQ3MCwgImp0aSI6ICIwRUM4XzI0MDgxOEM1XzBCRTZFIiwgIm9hdCI6IDE3MDE5NDI5MzQsICJydF9leHAiOiAxNzE5Nzk3MTgyLCAicGVyIjogMCwgImlwX3N1YmplY3QiOiAiMTAxLjQ0LjgxLjEwNSIsICJpcF9jb25maXJtZXIiOiAiMTA2LjgzLjAuMTA4IiB9.q3Cp4z2EqXfHBTE_BXOj2LDYCd3UySnbyMQ_7dbbHQj0USh8VR_VPRGIbYkWKMoZYDZQuafcFn_WitjwrYvsDw; strInventoryLastContext=753_6; sessionid=0c36cebe0f73bc66f0188662',
+                'Pragma': 'no-cache',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1',
+                'Upgrade-Insecure-Requests': '1',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0',
+                'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Microsoft Edge";v="122"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
         },
         "DOWNLOAD_DELAY": 5,
 
@@ -58,11 +71,11 @@ class SteamSpider(scrapy.Spider):
             if self.page < self.total_page:
                 self.page += 1
                 yield Request(
-                    f'https://steamcommunity.com/market/search/render/?query=&start={(self.page - 1) * self.pagesize}&count={self.pagesize}&search_descriptions=0&sort_column=popular&sort_dir=desc&appid={self.game}&norender=1',
+                    f'https://steamcommunity.com/market/search/render/?query=&start={(self.page - 1) * self.pagesize}&count={self.pagesize}&search_descriptions=0&sort_column=popular&sort_dir=desc&appid={self.game}&norender=1&country=HK',
                     callback=self.parse, dont_filter=True)
         except Exception as e:
             self.logger.error(f"msg:请求异常{e},spider:{self.collection},url:{response.url},resp:{response.json()}")
             sleep(60)
             yield Request(
-                f'https://steamcommunity.com/market/search/render/?query=&start={(self.page - 1) * self.pagesize}&count={self.pagesize}&search_descriptions=0&sort_column=popular&sort_dir=desc&appid={self.game}&norender=1',
+                f'https://steamcommunity.com/market/search/render/?query=&start={(self.page - 1) * self.pagesize}&count={self.pagesize}&search_descriptions=0&sort_column=popular&sort_dir=desc&appid={self.game}&norender=1&country=HK',
                 callback=self.parse, dont_filter=True)
