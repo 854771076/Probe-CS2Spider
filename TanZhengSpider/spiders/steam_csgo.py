@@ -2,8 +2,8 @@ import scrapy
 from scrapy.http import Request
 from time import sleep
 from math import ceil
-
-
+import requests
+from lxml import etree
 class SteamSpider(scrapy.Spider):
     name = "steam_csgo"
     allowed_domains = ["steamcommunity.com"]
@@ -12,6 +12,7 @@ class SteamSpider(scrapy.Spider):
     collection = 'steam_csgo'
     game = 730
     column = 'hash_name'
+    USD2CNY=None
     start_urls = [
         f"https://steamcommunity.com/market/search/render/?query=&start={(page - 1) * pagesize}&count={pagesize}&search_descriptions=0&sort_column=popular&sort_dir=desc&appid={game}&norender=1"]
     custom_settings = {
@@ -27,14 +28,28 @@ class SteamSpider(scrapy.Spider):
         "DOWNLOAD_DELAY": 5,
 
     }
+    def getUSD2CNY(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
+        }
+        url = "https://www.xe.com/zh-CN/currencyconverter/convert/?Amount=1&From=USD&To=CNY"
+        response = requests.get(url, headers=headers)
+        TREE = etree.HTML(response.text)
+        self.USD2CNY=float(''.join(TREE.xpath('//*[@class="result__BigRate-sc-1bsijpp-1 dPdXSB"]//text()')[:2]))
 
     def parse(self, response):
         try:
+            if not self.USD2CNY:
+                self.getUSD2CNY()
+
+            self.logger.info(f"USD2CNY:{self.USD2CNY}")
+            print(f"USD2CNY:{self.USD2CNY}")
             datas = response.json().get('results', [])
             self.total_page = ceil(int(response.json().get('total_count', 0)) / self.pagesize)
             self.logger.info(f'msg:爬取开始{self.page}/{self.total_page},spider:{self.collection},url:{response.url}')
             if datas:
                 for data in datas:
+                    data['sell_price']=round(float(data.get('sell_price',0)/100)*self.USD2CNY,2)
                     yield data
             else:
                 self.logger.error(f"msg:数据为空,spider:{self.collection},url:{response.url},resp:{response.json()}")
