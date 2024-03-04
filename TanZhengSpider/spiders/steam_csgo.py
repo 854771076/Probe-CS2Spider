@@ -50,6 +50,7 @@ class SteamSpider(scrapy.Spider):
             if datas:
                 for data in datas:
                     data['sell_price']=round(float(data.get('sell_price',0)/100)*self.USD2CNY,2)
+                    data['asset_description']['icon_url']='https://steamcommunity-a.akamaihd.net/economy/image/'+data['asset_description']['icon_url']
                     yield data
             else:
                 self.logger.error(f"msg:数据为空,spider:{self.collection},url:{response.url},resp:{response.json()}")
