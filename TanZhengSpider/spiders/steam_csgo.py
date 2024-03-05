@@ -63,7 +63,7 @@ class SteamSpider(scrapy.Spider):
             if datas:
                 for data in datas:
                     data['sell_price']=round(float(data.get('sell_price',0)/100)*self.USD2CNY,2)
-                    data['sale_price'] = round((float(data.get('sale_price_text', '').split(' ')[0].replace("$",'').replace(",",'')) / 100) * self.USD2CNY, 2)
+                    data['sale_price'] = round((float(data.get('sale_price_text', '').split(' ')[0].replace("$",'').replace(",",'')) ) * self.USD2CNY, 2)
                     data['asset_description']['icon_url']='https://steamcommunity-a.akamaihd.net/economy/image/'+data['asset_description']['icon_url']
                     yield data
             else:
