@@ -13,4 +13,4 @@
 
 ### 三、支持
 
-![pay](img\pay.png)
+![pay](img/pay.png)
