@@ -25,6 +25,10 @@ class DefaultPipeline:
         #                            settings.get('REDIS_DB'))
     def process_item(self, item, spider):
         try:
+            if len(self.conn.write_list)>=spider.pagesize:
+                spider.logger.info(f'开始保存-{len(self.conn.write_list)}')
+                self.conn.submit()
+                self.conn.write_list = []
             self.conn.update_item(item,spider.column)
 
         except Exception as e:
