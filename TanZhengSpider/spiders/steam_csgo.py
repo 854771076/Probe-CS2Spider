@@ -48,7 +48,7 @@ class SteamSpider(scrapy.Spider):
         url = "https://www.xe.com/zh-CN/currencyconverter/convert/?Amount=1&From=USD&To=CNY"
         response = requests.get(url, headers=headers)
         TREE = etree.HTML(response.text)
-        self.USD2CNY=float(''.join(TREE.xpath('//*[@class="sc-36218086-1 kibMZh"]//text()')[:2]))
+        self.USD2CNY=float(''.join(TREE.xpath('/html/body/div[1]/div[4]/div[2]/section/div[2]/div/main/div/div[2]/div[1]/div/p[2]//text()')[:2]))
 
     def parse(self, response):
         try:
