@@ -11,16 +11,16 @@ BOT_NAME = "TanZhengSpider"
 
 SPIDER_MODULES = ["TanZhengSpider.spiders"]
 NEWSPIDER_MODULE = "TanZhengSpider.spiders"
-MONGODB_HOST = "spider.fiang.fun"
+MONGODB_HOST = ""
 MONGODB_PORT = 27017
-MONGODB_USER = 'admin'
-MONGODB_PSW = 'fiang123'
+MONGODB_USER = ''
+MONGODB_PSW = ''
 MONGODB_AUTHSOURCE = 'admin'
 MONGODB_DB = 'tanzheng-spider'
 
-REDIS_HOST="www.fiang.fun"
+REDIS_HOST=""
 REDIS_PORT=6379
-REDIS_PSW='fiang123'
+REDIS_PSW=''
 REDIS_DB=2
 
 LOG_LEVEL = 'INFO'
