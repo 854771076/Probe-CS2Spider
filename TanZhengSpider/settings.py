@@ -28,41 +28,11 @@ COOKIES_ENABLED = False
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 # 悠悠有品账号配置
-UUYP_USERNAME='19122486487'
-UUYP_PASSWORD='wo195271'
+UUYP_USERNAME=''
+UUYP_PASSWORD=''
 # buff cookie配置
 BUFF_COOKIES={
-'Device-Id': '6f4da32e-350c-4ea9-b7f4-412544f9435f',
-            'Timezone': 'China Standard Time',
-            'Locale': 'zh_CN',
-            'System-Type': 'Android',
-            'Rom-Id': 'V417IR',
-            'User-Agent': 'Android/761/2.51.1.202111221546/6a7220a170b1a6df/32/vivo/V2218A/V2218A/6f4da32e-350c-4ea9-b7f4-412544f9435f',
-            'Product': 'V2218A',
-            'App-Version': '761',
-            'Screen-Size': '7.65',
-            'Timestamp': '1706146155.261',
-            'Locale-Supported': 'zh-Hans',
-            'Build-Fingerprint': 'OnePlus/OnePlus8Pro/OnePlus8Pro:12/V417IR/2401122222:user/release-keys',
-            'Network': 'WIFI/',
-            'Manufacturer': 'vivo',
-            'Timezone-Offset': '28800000',
-            'System-Version': '32',
-            'Screen-Density': '240.00',
-            'Channel': 'Official',
-            'Device-Id-Weak': '6a7220a170b1a6df',
-            'Timezone-Offset-DST': '28800000',
-            'Brand': 'vivo',
-            'Rom': 'V417IR release-keys',
-            'Seed': 'ac53d15ed2a73b19647d7d983e776471',
-            'Model': 'V2218A',
-            'Sign': 'Hello, world!',
-            'App-Version-Code': '2.51.1.202111221546',
-            'Resolution': '900x1600',
-            'DeviceName': 'V2218A',
-            'Host': 'buff.163.com',
-            # Requests sorts cookies= alphabetically
-            'Cookie': 'session=1-aE_-SAWUsvDfWikbowHgvDw4cJS4RfIPXs2JPr0EYfg12041475705',
+
         }
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = "TanZhengSpider (+http://www.yourdomain.com)"
