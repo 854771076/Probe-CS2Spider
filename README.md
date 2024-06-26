@@ -1,7 +1,7 @@
 # TanZhengCS2Spider
 探针网爬虫，基于scrapy的cs2游戏饰品平台爬虫，网页buff，悠悠有品，igxe，steam，c5平台爬虫
 
-后续会搭建饰品资讯平台
+
 
 ### 一、声明
 
@@ -14,3 +14,8 @@
 ### 三、支持
 
 ![pay](img/pay.png)
+### 四、运行
+本程序使用python+scrapy,如有不懂自行学习。
+- 进入项目目录
+- 安装第三方库`pip install -r requirements.txt`
+- 运行run.py
